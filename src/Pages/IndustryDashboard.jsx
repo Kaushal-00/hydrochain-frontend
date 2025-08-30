@@ -5,7 +5,7 @@ import IoTDataFeedCard from "@/components/IoTDataFeedCard";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const PlantDashboard = () => {
+const IndustryDashboard = () => {
     const [username, setUsername] = useState("undefined");
     const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const PlantDashboard = () => {
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Welcome, {username} 🌱</h1>
 
             <div className="flex justify-center">
-                <DisplayCard variant="numerical" title="Total Credit Generated" number={2450} msg="+12% from last month" />
+                <DisplayCard variant="numerical" title="Total Credit Retired" number={2450} msg="+12% from last month" />
                 <DisplayCard variant="numerical" title="Total Credit Transfered" number={1890} msg="77% utilization rate" />
                 <DisplayCard variant="nameDisplay" title="Assigned Auditor" displayName="Environmental Audit Corp" subMsg="Verified & Active" />
             </div>
@@ -30,22 +30,44 @@ const PlantDashboard = () => {
 
             <div className="flex justify-center">
                 <IoTDataFeedCard
-                    requirements="date, hydrogenProduced, purity, electricityConsumed, electrolyzerEfficiency, deviceId"
+                    requirements="date, hydrogenConsumed, timePeriod, energySource, location, deviceId"
                     values={{
-                        date: "2025-08-30",
-                        hydrogenProduced: 100,
-                        purity: 99,
-                        electricityConsumed: 500,
-                        electrolyzerEfficiency: 75,
-                        deviceId: "DEVICE-001"
+                    "date": "2025-08-30",
+                    "hydrogenConsumed": 100,
+                    "timePeriod": "08:00 - 16:00",
+                    "energySource": "Solar",
+                    "location": "23.456, 72.345",
+                    "deviceId": "DEVICE-002"
                     }}
-                    onAction={() => alert("Credits Generated!")}
-                    actionLabel="Generate Credits"
+                    onAction={() => alert("Credits Retired!")}
+                    actionLabel="Retire Credits"
                 />
                 <CreditBalanceCard />
             </div>
 
-            <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Credit Generation History</h1>
+            <div className="ml-[1.25%]">
+            <IoTDataFeedCard
+                requirements="date, hydrogenTransferred, transferStartTime, transferEndTime, transportMethod, trackingId, location (from,to), deviceId"
+                values={{
+                "date": "2025-08-30",
+                "hydrogenTransferred": 200,
+                "transferStartTime": "09:00",
+                "transferEndTime": "12:00",
+                "transportMethod": "Pipeline",
+                "trackingId": "TRACK-123",
+                "location": {
+                    "from": "23.456,72.345",
+                    "to": "23.567,72.456"
+                },
+                "deviceId": "DEVICE-003"
+                }}
+                onAction={() => alert("Credits Transferred!")}
+                actionLabel="Transfer Credits"
+            />
+
+            </div>
+
+            <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Credit Retiration History</h1>
 
             <div className="flex justify-center">
                 <DataTable />
@@ -65,4 +87,4 @@ const PlantDashboard = () => {
     );
 }
 
-export default PlantDashboard;
+export default IndustryDashboard;
