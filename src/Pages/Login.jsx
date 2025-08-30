@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     const [role, setRole] = useState("Plant");
@@ -9,7 +10,7 @@ const Login = () => {
             <div className="p-4">
                 <h1 className="text-green-600 font-bold text-xl flex items-center space-x-2">
                     <span className="bg-green-600 text-white p-2 rounded-md">🌱</span>
-                    <span>GreenH2 Credits</span>
+                    <span>HydroChain</span>
                 </h1>
             </div>
 
@@ -68,9 +69,9 @@ const Login = () => {
                     {/* Register */}
                     <p className="text-sm text-center mt-4">
                         New Plant/Industry?{" "}
-                        <a href="#" className="text-green-600 font-medium hover:underline">
+                        <Link to="/register" className="text-green-600 font-medium hover:underline">
                             Register here
-                        </a>
+                        </Link>
                     </p>
 
                     <p className="text-xs text-gray-400 text-center mt-2">
