@@ -5,6 +5,7 @@ import Register from "./Pages/Register"
 import PlantDashboard from "./Pages/PlantDashboard"
 import ProtectedRoute from "./components/ProtactRoute"
 import IndustryDashboard from "./Pages/IndustryDashboard"
+import AuditDashboard from "./Pages/AuditDashboard"
 
 function App() {
   return (
@@ -32,14 +33,14 @@ function App() {
           }
         />
 
-        {/* <Route
-          path="/audit/dashboard"
+        <Route
+          path="/auditor/dashboard"
           element={
-            <ProtectedRoute allowedRoles={["Audit"]}>
+            <ProtectedRoute allowedRoles={["Auditor"]}>
               <AuditDashboard />
             </ProtectedRoute>
           }
-        /> */}
+        />
       </Routes>
     </BrowserRouter>
   )

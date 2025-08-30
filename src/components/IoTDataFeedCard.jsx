@@ -4,6 +4,11 @@ const IoTDataFeedCard = ({ requirements, values = {}, onAction, actionLabel }) =
   // Convert comma-separated string to array
   const fields = typeof requirements === "string" ? requirements.split(",").map(f => f.trim()) : requirements;
 
+  function getInputType(field, value) {
+    if (typeof value === "number") return "number";
+    return "text"; // fallback
+  }
+
   return (
     <Card className="m-5 w-[47.5%] p-6">
       {/* Title */}
@@ -25,7 +30,7 @@ const IoTDataFeedCard = ({ requirements, values = {}, onAction, actionLabel }) =
             </label>
 
             <input
-              type={field.toLowerCase().includes("id") || field.toLowerCase().includes("date") ? "text" : "number"}
+              type={getInputType(field, values[field])}
               value={values[field] || ""}
               readOnly
               className="w-full mt-1 p-2 border rounded-md bg-gray-50"

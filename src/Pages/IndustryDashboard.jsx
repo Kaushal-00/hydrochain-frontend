@@ -4,12 +4,61 @@ import IoTDataFeedCard from "../components/IoTDataFeedCard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DisplayCard from "../components/DisplayCard";
-import { client } from "../../config";
+import { client, NPOINT_URL } from "../../config";
+import axios from "axios";
 
 const IndustryDashboard = () => {
     const [username, setUsername] = useState("loading...");
     const [userData, setUserData] = useState();
+    const [retireIndex, setRetireIndex] = useState();
+    const [transferIndex, setTransferIndex] = useState();
     const navigate = useNavigate();
+
+    const retireData = [
+        {
+            "date": "2005-08-30",
+            "hydrogenConsumed": 900,
+            "timePeriod": "08:00 - 8:00",
+            "energySource": "Solar",
+            "location": "23.456, 72.345",
+            "deviceId": "DEVICE-009"
+
+        },
+        {
+            "date": "2025-08-30",
+            "hydrogenConsumed": 100,
+            "timePeriod": "08:00 - 16:00",
+            "energySource": "Solar",
+            "location": "23.456, 72.345",
+            "deviceId": "DEVICE-002"
+
+        }
+    ];
+
+    const transferData = [
+        {
+            "date": "2005-08-30",
+            "hydrogenTransferred": 900,
+            "transferStartTime": "91:00",
+            "transferEndTime": "12:00",
+            "transportMethod": "Pipeline",
+            "trackingId": "TRACK-123",
+            "location (from)": "23.456,72.345",
+            "location (to)": "23.567,72.456",
+            "deviceId": "DEVICE-008"
+        },
+        {
+            "date": "2025-08-30",
+            "hydrogenTransferred": 200,
+            "transferStartTime": "09:00",
+            "transferEndTime": "12:00",
+            "transportMethod": "Pipeline",
+            "trackingId": "TRACK-123",
+            "location (from)": "23.456,72.345",
+            "location (to)": "23.567,72.456",
+            "deviceId": "DEVICE-003"
+        }
+    ]
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -21,12 +70,39 @@ const IndustryDashboard = () => {
 
                 const temp = await client.get(`/users/${fetchUsername}`);
                 setUserData(temp.data.data);
+
+                const index = await axios.get(NPOINT_URL);
+                setRetireIndex(index?.data?.industryRetire);
+                setTransferIndex(index?.data?.industryTransfer);
             } catch (err) {
                 console.log("Failed to fetch user: ", err);
             }
         }
         fetchUser();
     }, [])
+
+    async function retireCredit() {
+        try {
+            await client.post('/request/issues', {
+                amount: 1, // or compute based on hydrogenProduced / credits
+                metadata: JSON.stringify(retireData[retireIndex]) // stringify object
+            });
+        } catch (err) {
+            console.error("Request failed:", err.response?.data || err.message);
+        }
+    }
+
+    async function transferCredit() {
+        try {
+            await client.post('/request/issues', {
+                amount: 1, // or compute based on hydrogenProduced / credits
+                metadata: JSON.stringify(transferData[transferIndex]) // stringify object
+            });
+        } catch (err) {
+            console.error("Request failed:", err.response?.data || err.message);
+        }
+
+    }
 
     function creditHistroy(e) {
         return e.filter(item => item.type == "ISSUE");
@@ -58,15 +134,8 @@ const IndustryDashboard = () => {
             <div className="flex justify-center">
                 <IoTDataFeedCard
                     requirements="date, hydrogenConsumed, timePeriod, energySource, location, deviceId"
-                    values={{
-                        "date": "2025-08-30",
-                        "hydrogenConsumed": 100,
-                        "timePeriod": "08:00 - 16:00",
-                        "energySource": "Solar",
-                        "location": "23.456, 72.345",
-                        "deviceId": "DEVICE-002"
-                    }}
-                    onAction={() => alert("Credits Retired!")}
+                    values={retireData[retireIndex]}
+                    onAction={() => retireCredit()}
                     actionLabel="Retire Credits"
                 />
                 <CreditBalanceCard current={userData?.creditSummary?.activeAmount ?? '-'} pending={userData?.creditSummary?.pendingAmount ?? '-'} />
@@ -74,21 +143,9 @@ const IndustryDashboard = () => {
 
             <div className="ml-[1.25%] w-full">
                 <IoTDataFeedCard
-                    requirements="date, hydrogenTransferred, transferStartTime, transferEndTime, transportMethod, trackingId, location (from,to), deviceId"
-                    values={{
-                        "date": "2025-08-30",
-                        "hydrogenTransferred": 200,
-                        "transferStartTime": "09:00",
-                        "transferEndTime": "12:00",
-                        "transportMethod": "Pipeline",
-                        "trackingId": "TRACK-123",
-                        "location": {
-                            "from": "23.456,72.345",
-                            "to": "23.567,72.456"
-                        },
-                        "deviceId": "DEVICE-003"
-                    }}
-                    onAction={() => alert("Credits Transferred!")}
+                    requirements="date, hydrogenTransferred, transferStartTime, transferEndTime, transportMethod, trackingId, location (from), location (to), deviceId"
+                    values={transferData[transferIndex]}
+                    onAction={() => transferCredit()}
                     actionLabel="Transfer Credits"
                 />
 
