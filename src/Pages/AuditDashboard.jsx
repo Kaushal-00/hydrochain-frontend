@@ -2,10 +2,12 @@ import DisplayCard from "@/components/DisplayCard";
 import { client } from "../../config";
 import { useEffect, useState } from "react";
 import DataTable from "@/components/DataTable";
+import { useNavigate } from "react-router-dom";
 
 const AuditDashboard = () => {
     const [username, setUsername] = useState("loading...");
     const [userData, setUserData] = useState();
+    const navigate = useNavigate();
 
     const data = [
         {
