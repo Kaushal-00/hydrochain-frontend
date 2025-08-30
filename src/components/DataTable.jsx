@@ -2,13 +2,15 @@ import { Card } from "./ui/card";
 
 const statusStyles = {
     PENDING: "bg-gray-700 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1",
-    ISSUED: "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
+    TRANSFERRED_ISSUED: "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
+    TRANSFERRED: "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
     REJECTED: "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
 };
 
 const statusLabels = {
     PENDING: "Pending",
-    ISSUED: "Approved",
+    TRANSFERRED_ISSUED: "Approved",
+    TRANSFERRED: "Approved",
     REJECTED: "Rejected",
 };
 
@@ -21,20 +23,25 @@ const DataTable = ({ data }) => {
         );
     }
 
-    // Dynamically get all keys (excluding id for display)
     const columns = Object.keys(data[0]).filter((key) => key !== "id");
+
+    const columnWidths = {
+        amount: "8%",
+        status: "12%",
+        txnHash: "40%",
+        default: `${40 / (columns.length - 3)}%`,
+    };
 
     return (
         <Card className="m-5 w-[90%] p-6 overflow-x-auto">
             <table className="w-full table-fixed border-collapse">
-                {/* Table Head */}
                 <thead>
                     <tr className="text-left border-b">
                         {columns.map((col) => (
                             <th
                                 key={col}
-                                className={`pb-3 text-sm font-medium text-gray-600 capitalize`}
-                                style={{ width: `${100 / columns.length}%` }}
+                                className="pb-3 text-sm font-medium text-gray-600 capitalize"
+                                style={{ width: columnWidths[col] || columnWidths.default }}
                             >
                                 {col}
                             </th>
@@ -43,7 +50,6 @@ const DataTable = ({ data }) => {
                 </thead>
             </table>
 
-            {/* Scrollable Body */}
             <div className="max-h-64 overflow-y-auto">
                 <table className="w-full table-fixed border-collapse">
                     <tbody>
@@ -52,8 +58,11 @@ const DataTable = ({ data }) => {
                                 {columns.map((col) => (
                                     <td
                                         key={col}
-                                        className="py-3 text-sm"
-                                        style={{ width: `${100 / columns.length}%` }}
+                                        className="py-3 text-sm truncate"
+                                        style={{
+                                            width: columnWidths[col] || columnWidths.default,
+                                            maxWidth: columnWidths[col] || columnWidths.default
+                                        }}
                                     >
                                         {col === "status" ? (
                                             <span
@@ -63,7 +72,10 @@ const DataTable = ({ data }) => {
                                             </span>
                                         ) : (
                                             <span
-                                                className={col === "amount" ? "font-semibold" : ""}
+                                                className={
+                                                    col === "amount" ? "font-semibold" : "block truncate"
+                                                }
+                                                title={row[col]}
                                             >
                                                 {row[col]}
                                             </span>

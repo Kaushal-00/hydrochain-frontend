@@ -1,13 +1,41 @@
+import { client } from "../../config";
 import CreditBalanceCard from "../components/CreditBalanceCard";
 import DataTable from "../components/DataTable";
 import DisplayCard from "../components/DisplayCard";
 import IoTDataFeedCard from "../components/IoTDataFeedCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const PlantDashboard = () => {
-    const [username, setUsername] = useState("undefined");
+    const [username, setUsername] = useState("loading...");
+    const [userData, setUserData] = useState();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await client.get('/me');
+                const fetchedUsername = res.data.data.username;
+
+                setUsername(fetchedUsername);
+
+                const temp = await client.get(`/users/${fetchedUsername}`);
+                setUserData(temp.data.data);
+            } catch (err) {
+                console.log("Failed to fetch user: ", err);
+            }
+        }
+        fetchUser();
+    }, [])
+
+    function creditHistroy(e) {
+        return e.filter(item => item.type == "ISSUE");
+    }
+
+    function recentTransactions(e) {
+        return e.filter(item => item.type != "ISSUE");
+    }
+
 
     return (
         <div>
@@ -42,19 +70,19 @@ const PlantDashboard = () => {
                     onAction={() => alert("Credits Generated!")}
                     actionLabel="Generate Credits"
                 />
-                <CreditBalanceCard />
+                <CreditBalanceCard current={userData?.creditSummary?.activeAmount ?? '-'} pending={userData?.creditSummary?.pendingAmount ?? '-'} />
             </div>
 
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Credit Generation History</h1>
 
             <div className="flex justify-center">
-                <DataTable />
+                <DataTable data={creditHistroy(userData?.transactions ?? [])} />
             </div>
 
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Recent Transactions</h1>
 
             <div className="flex justify-center">
-                <DataTable />
+                <DataTable data={recentTransactions(userData?.transactions ?? [])} />
             </div>
 
 
