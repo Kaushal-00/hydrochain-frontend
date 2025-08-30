@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
     const [role, setRole] = useState("Plant");
+    const navigate = useNavigate();
 
     return (
         <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
             {/* Navbar / Header */}
-            <div className="p-4">
+            <div className="p-4 cursor-pointer" onClick={() => navigate("/")}>
                 <h1 className="text-green-600 font-bold text-xl flex items-center space-x-2">
                     <span className="bg-green-600 text-white p-2 rounded-md">🌱</span>
                     <span>HydroChain</span>
