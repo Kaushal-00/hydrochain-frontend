@@ -14,6 +14,7 @@ const Login = () => {
                 password
             })
             console.log("Login successful!");
+            navigate(`/${(role).toLowerCase()}/dashboard`);
         } catch (err) {
             console.log(err);
         }
