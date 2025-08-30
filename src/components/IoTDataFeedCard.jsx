@@ -10,7 +10,7 @@ const IoTDataFeedCard = ({
     onGenerate,
 }) => {
     return (
-        <Card className="m-5 w-[40%] p-6">
+        <Card className="m-5 w-[45%] p-6">
             {/* Title */}
             <div className="mb-4">
                 <h2 className="text-xl font-bold flex items-center gap-2">
