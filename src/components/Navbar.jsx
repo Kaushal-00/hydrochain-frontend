@@ -22,7 +22,7 @@ const Navbar = () => {
       ${isHome && !scrolled ? "bg-white/10 backdrop-blur-lg" : "bg-white shadow-md"}`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        
+
         {/* Left: Logo */}
         <NavLink
           to="/"
@@ -35,20 +35,16 @@ const Navbar = () => {
         {/* Center: Nav Links */}
         <div className="flex-1 flex justify-center space-x-6">
           {["Home", "About", "Workflow", "Features", "Contact"].map((item) => (
-            <NavLink
+            <a
               key={item}
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-              className={({ isActive }) =>
-                `font-medium transition-colors duration-500 ${
-                  isHome && !scrolled
-                    ? "text-white hover:text-gray-200"
-                    : "text-gray-800 hover:text-green-600"
-                } ${isActive ? "text-green-600 font-semibold" : ""}`
-              }
-              end
+              href={item === "Home" ? "/" : `#${item.toLowerCase()}`}
+              className={`${isHome && !scrolled
+                ? "text-white hover:text-gray-200"
+                : "text-gray-800 hover:text-green-600"
+                }`}
             >
               {item}
-            </NavLink>
+            </a>
           ))}
         </div>
 
@@ -57,10 +53,9 @@ const Navbar = () => {
           <NavLink
             to="/login"
             className={({ isActive }) =>
-              `px-5 py-2 rounded-full font-medium transition-all duration-500 ${
-                isHome && !scrolled
-                  ? "text-white hover:text-gray-200"
-                  : "text-gray-800 hover:text-green-600"
+              `px-5 py-2 rounded-full font-medium transition-all duration-500 ${isHome && !scrolled
+                ? "text-white hover:text-gray-200"
+                : "text-gray-800 hover:text-green-600"
               } ${isActive ? "text-green-600 font-semibold" : ""}`
             }
           >

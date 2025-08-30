@@ -2,9 +2,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import InfoCard from "../components/ui/homepages/InfoCard";
-import FeatureCard from "../components/ui/homepages/FeatureCard";
-import StepBubble from "../components/ui/homepages/StepBubble";
+import InfoCard from "../components/InfoCard";
+import FeatureCard from "../components/FeatureCard";
+import StepBubble from "../components/StepBubble";
 import '../../src/index.css'; // relative to the component or src
 
 
@@ -88,7 +88,7 @@ export default function Home() {
                 title="Plants Request Credits"
                 short="Producers submit sensor-verified production data."
                 details="IoT sensor feeds stream production and metadata to the verification layer; tamper detection runs automatically to ensure data integrity."
-                icon={<svg width="18" height="18" viewBox="0 0 24 24" className="text-emerald-600"><path d="M3 13h18" stroke="currentColor" strokeWidth="1.6"/></svg>}
+                icon={<svg width="18" height="18" viewBox="0 0 24 24" className="text-emerald-600"><path d="M3 13h18" stroke="currentColor" strokeWidth="1.6" /></svg>}
               />
             </div>
 
