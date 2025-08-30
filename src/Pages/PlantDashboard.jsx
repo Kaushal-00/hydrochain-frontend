@@ -26,16 +26,24 @@ const PlantDashboard = () => {
             }
         }
         fetchUser();
-    }, [])
+    }, []);
 
     function creditHistroy(e) {
-        return e.filter(item => item.type == "ISSUE");
+        return e.filter(item => item.type === "ISSUE");
     }
 
     function recentTransactions(e) {
-        return e.filter(item => item.type != "ISSUE");
+        return e.filter(item => item.type !== "ISSUE");
     }
 
+    const getUtilizationRate = () => {
+        const generated = parseInt(userData?.creditSummary?.lifeTimeGeneratedCredits) || 0;
+        const transferred = parseInt(userData?.creditSummary?.lifeTimeTransferredCredits) || 0;
+
+        if (generated === 0) return "0%"; // avoid divide by zero
+        const percentage = (transferred / generated) * 100;
+        return `${percentage.toFixed(2)}% utilization rate`;
+    };
 
     return (
         <div>
@@ -49,8 +57,8 @@ const PlantDashboard = () => {
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Welcome, {username} 🌱</h1>
 
             <div className="flex justify-center">
-                <DisplayCard variant="numerical" title="Total Credit Generated" number={2450} msg="+12% from last month" />
-                <DisplayCard variant="numerical" title="Total Credit Transfered" number={1890} msg="77% utilization rate" />
+                <DisplayCard variant="numerical" title="Total Credit Generated" number={userData?.creditSummary?.lifeTimeGeneratedCredits ?? '--'} />
+                <DisplayCard variant="numerical" title="Total Credit Transferred" number={userData?.creditSummary?.lifeTimeTransferredCredits ?? '--'} msg={`${getUtilizationRate()} utilization rate`} />
                 <DisplayCard variant="nameDisplay" title="Assigned Auditor" displayName="Environmental Audit Corp" subMsg="Verified & Active" />
             </div>
 
@@ -70,27 +78,24 @@ const PlantDashboard = () => {
                     onAction={() => alert("Credits Generated!")}
                     actionLabel="Generate Credits"
                 />
-                <CreditBalanceCard current={userData?.creditSummary?.activeAmount ?? '-'} pending={userData?.creditSummary?.pendingAmount ?? '-'} />
+                <CreditBalanceCard current={userData?.creditSummary?.activeAmount ?? '-'} pending={userData?.creditSummary?.pendingAmount ?? '-'} lifetime={userData?.creditSummary?.lifeTimeGeneratedCredits ?? '-'} />
             </div>
 
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Credit Generation History</h1>
-
             <div className="flex justify-center">
                 <DataTable data={creditHistroy(userData?.transactions ?? [])} />
             </div>
 
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Recent Transactions</h1>
-
             <div className="flex justify-center">
                 <DataTable data={recentTransactions(userData?.transactions ?? [])} />
             </div>
-
 
             <div className="bg-gray-50 border-t-gray-200 border-1 mt-8 w-full p-5 text-gray-500">
                 © {new Date().getFullYear()} HydroChain
             </div>
         </div>
     );
-}
+};
 
 export default PlantDashboard;
