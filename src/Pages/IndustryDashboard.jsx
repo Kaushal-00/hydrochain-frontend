@@ -1,9 +1,9 @@
-import CreditBalanceCard from "@/components/CreditBalanceCard";
-import DataTable from "@/components/DataTable";
-import DisplayCard from "@/components/DisplayCard";
-import IoTDataFeedCard from "@/components/IoTDataFeedCard";
+import CreditBalanceCard from "../components/CreditBalanceCard";
+import DataTable from "../components/DataTable";
+import IoTDataFeedCard from "../components/IoTDataFeedCard";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DisplayCard from "../components/DisplayCard";
 
 const IndustryDashboard = () => {
     const [username, setUsername] = useState("undefined");
@@ -32,12 +32,12 @@ const IndustryDashboard = () => {
                 <IoTDataFeedCard
                     requirements="date, hydrogenConsumed, timePeriod, energySource, location, deviceId"
                     values={{
-                    "date": "2025-08-30",
-                    "hydrogenConsumed": 100,
-                    "timePeriod": "08:00 - 16:00",
-                    "energySource": "Solar",
-                    "location": "23.456, 72.345",
-                    "deviceId": "DEVICE-002"
+                        "date": "2025-08-30",
+                        "hydrogenConsumed": 100,
+                        "timePeriod": "08:00 - 16:00",
+                        "energySource": "Solar",
+                        "location": "23.456, 72.345",
+                        "deviceId": "DEVICE-002"
                     }}
                     onAction={() => alert("Credits Retired!")}
                     actionLabel="Retire Credits"
@@ -45,25 +45,25 @@ const IndustryDashboard = () => {
                 <CreditBalanceCard />
             </div>
 
-            <div className="ml-[1.25%]">
-            <IoTDataFeedCard
-                requirements="date, hydrogenTransferred, transferStartTime, transferEndTime, transportMethod, trackingId, location (from,to), deviceId"
-                values={{
-                "date": "2025-08-30",
-                "hydrogenTransferred": 200,
-                "transferStartTime": "09:00",
-                "transferEndTime": "12:00",
-                "transportMethod": "Pipeline",
-                "trackingId": "TRACK-123",
-                "location": {
-                    "from": "23.456,72.345",
-                    "to": "23.567,72.456"
-                },
-                "deviceId": "DEVICE-003"
-                }}
-                onAction={() => alert("Credits Transferred!")}
-                actionLabel="Transfer Credits"
-            />
+            <div className="ml-[1.25%] w-full">
+                <IoTDataFeedCard
+                    requirements="date, hydrogenTransferred, transferStartTime, transferEndTime, transportMethod, trackingId, location (from,to), deviceId"
+                    values={{
+                        "date": "2025-08-30",
+                        "hydrogenTransferred": 200,
+                        "transferStartTime": "09:00",
+                        "transferEndTime": "12:00",
+                        "transportMethod": "Pipeline",
+                        "trackingId": "TRACK-123",
+                        "location": {
+                            "from": "23.456,72.345",
+                            "to": "23.567,72.456"
+                        },
+                        "deviceId": "DEVICE-003"
+                    }}
+                    onAction={() => alert("Credits Transferred!")}
+                    actionLabel="Transfer Credits"
+                />
 
             </div>
 

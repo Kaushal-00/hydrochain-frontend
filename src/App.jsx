@@ -4,6 +4,7 @@ import Login from "./Pages/Login"
 import Register from "./Pages/Register"
 import PlantDashboard from "./Pages/PlantDashboard"
 import ProtectedRoute from "./components/ProtactRoute"
+import IndustryDashboard from "./Pages/IndustryDashboard"
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           }
         />
 
-        {/* <Route
+        <Route
           path="/industry/dashboard"
           element={
             <ProtectedRoute allowedRoles={["Industry"]}>
@@ -31,7 +32,7 @@ function App() {
           }
         />
 
-        <Route
+        {/* <Route
           path="/audit/dashboard"
           element={
             <ProtectedRoute allowedRoles={["Audit"]}>

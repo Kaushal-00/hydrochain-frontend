@@ -1,7 +1,7 @@
-import CreditBalanceCard from "@/components/CreditBalanceCard";
-import DataTable from "@/components/DataTable";
-import DisplayCard from "@/components/DisplayCard";
-import IoTDataFeedCard from "@/components/IoTDataFeedCard";
+import CreditBalanceCard from "../components/CreditBalanceCard";
+import DataTable from "../components/DataTable";
+import DisplayCard from "../components/DisplayCard";
+import IoTDataFeedCard from "../components/IoTDataFeedCard";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
