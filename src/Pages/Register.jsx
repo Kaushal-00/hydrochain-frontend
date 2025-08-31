@@ -7,7 +7,7 @@ const Register = () => {
     const [password, setPassword] = useState();
     const [role, setRole] = useState("Plant");
     const [companyName, setCompanyName] = useState();
-    const [renewableEnergyProofId, setRenewableEnergyProofId] = useState();
+    const [did, setDid] = useState();
     const [governmentLicenseId, setGovernmentLicenseId] = useState();
     const [auditorUsername, setAuditorUsername] = useState();
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Register = () => {
                 password,
                 role,
                 companyName,
-                renewableEnergyProofId,
+                did,
                 governmentLicenseId,
                 auditorUsername
             });
@@ -29,11 +29,11 @@ const Register = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="min-h-screen flex flex-col bg-gray-100">
             {/* Navbar / Header */}
-            <div className="p-4 cursor-pointer" onClick={() => navigate("/")}>
-                <h1 className="text-green-600 font-bold text-xl flex items-center space-x-2">
-                    <span className="bg-green-600 text-white p-2 rounded-md">🌱</span>
+            <div className="p-4 cursor-pointer bg-[#507464]" onClick={() => navigate("/")}>
+                <h1 className="text-white font-bold text-xl flex items-center space-x-2">
+                    <img src="./logo.png" width={40} />
                     <span>HydroChain</span>
                 </h1>
             </div>
@@ -106,17 +106,15 @@ const Register = () => {
                             />
                         </div>
 
-                        {role === "Plant" && (
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Renewable Energy Proof ID</label>
-                                <input
-                                    type="text"
-                                    onInput={e => setRenewableEnergyProofId(e.target.value)}
-                                    placeholder="Enter renewable energy certificate ID"
-                                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
-                                />
-                            </div>
-                        )}
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Enter Decentralized Identity (DID)</label>
+                            <input
+                                type="text"
+                                onInput={e => setDid(e.target.value)}
+                                placeholder="Enter Decentralized Identity (DID)"
+                                className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                            />
+                        </div>
 
                         <div>
                             <label className="block text-sm font-medium mb-1">Government License ID</label>

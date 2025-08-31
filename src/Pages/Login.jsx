@@ -6,6 +6,7 @@ const Login = () => {
     const [role, setRole] = useState("Plant");
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
+    const [did, setDid] = useState();
     const navigate = useNavigate();
 
     async function login() {
@@ -21,11 +22,11 @@ const Login = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="min-h-screen flex flex-col bg-gray-100">
             {/* Navbar / Header */}
-            <div className="p-4 cursor-pointer" onClick={() => navigate("/")}>
-                <h1 className="text-green-600 font-bold text-xl flex items-center space-x-2">
-                    <span className="bg-green-600 text-white p-2 rounded-md">🌱</span>
+            <div className="p-4 cursor-pointer bg-[#507464]" onClick={() => navigate("/")}>
+                <h1 className="text-white font-bold text-xl flex items-center space-x-2">
+                    <img src="./logo.png" width={40} />
                     <span>HydroChain</span>
                 </h1>
             </div>
@@ -75,6 +76,18 @@ const Login = () => {
                                 className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
                             />
                         </div>
+
+                        {role != 'Auditor' && (
+                            <div>
+                                <label className="block text-sm font-medium mb-1">Decentralized Identity (DID)</label>
+                                <input
+                                    type="text"
+                                    onInput={e => setDid(e.target.value)}
+                                    placeholder="Enter your Decentralized Identity (DID)"
+                                    className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-green-500 focus:outline-none"
+                                />
+                            </div>
+                        )}
 
                         <button
                             type="submit"

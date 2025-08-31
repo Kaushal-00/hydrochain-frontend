@@ -113,10 +113,11 @@ const IndustryDashboard = () => {
     }
 
     return (
-        <div>
-            <div className="p-4 cursor-pointer" onClick={() => navigate("/")}>
-                <h1 className="text-green-600 font-bold text-xl flex items-center space-x-2">
-                    <span className="bg-green-600 text-white p-2 rounded-md">🌱</span>
+        <div className="bg-gray-100">
+            {/* Navbar / Header */}
+            <div className="p-4 cursor-pointer bg-[#507464]" onClick={() => navigate("/")}>
+                <h1 className="text-white font-bold text-xl flex items-center space-x-2">
+                    <img src="../logo.png" width={40} />
                     <span>HydroChain</span>
                 </h1>
             </div>

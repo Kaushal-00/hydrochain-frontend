@@ -24,6 +24,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
         {/* Left: Logo */}
+        <img src="./logo.png" width={40} className="mr-2" />
         <NavLink
           to="/"
           className={`text-xl font-bold tracking-wide transition-colors duration-500 
