@@ -114,11 +114,6 @@ const PlantDashboard = () => {
                 <CreditBalanceCard current={userData?.creditSummary?.activeAmount ?? '-'} pending={userData?.creditSummary?.pendingAmount ?? '-'} lifetime={userData?.creditSummary?.lifeTimeGeneratedCredits ?? '-'} />
             </div>
 
-            <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Credit Generation History</h1>
-            <div className="flex justify-center">
-                <DataTable data={creditHistroy(userData?.transactions ?? [])} />
-            </div>
-
             <div className="bg-gray-50 border-t-gray-200 border-1 mt-8 w-full p-5 text-gray-500">
                 © {new Date().getFullYear()} HydroChain
             </div>
