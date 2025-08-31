@@ -172,9 +172,13 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
                                 )}
 
                                 {/* ✅ Anomaly Flag column */}
-                                <td className="py-3 text-sm align-middle text-center" style={{ width: columnWidths.anomaly }}>
+                                <td
+                                    className="py-3 text-sm align-middle text-center"
+                                    style={{ width: columnWidths.anomaly }}
+                                >
+                                    {console.log(data)}
                                     <span
-                                        className={`inline-block w-3 h-3 rounded-full ${row.anomaly ? "bg-green-500" : "bg-red-500"
+                                        className={`inline-block w-4 h-4 rounded-full ${row.anomaly ? "bg-red-500" : "bg-green-500"
                                             }`}
                                         title={row.anomaly ? "Anomaly detected" : "No anomaly"}
                                     ></span>

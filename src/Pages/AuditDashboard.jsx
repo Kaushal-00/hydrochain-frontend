@@ -10,16 +10,15 @@ const AuditDashboard = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // fetch user info + requests
+    // Fetch user info + requests
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // get logged-in user info
+                // Get logged-in user info
                 const res = await client.get("/me");
-                const fetchedUsername = res.data.data.username;
-                setUsername(fetchedUsername);
+                setUsername(res.data.data.username);
 
-                // fetch issue, buy, retire requests
+                // Fetch issue, buy, retire requests
                 const [issues, buys, retires] = await Promise.all([
                     client.get("/request/issues"),
                     client.get("/request/buy"),
@@ -34,6 +33,7 @@ const AuditDashboard = () => {
                         status: r.status?.toUpperCase() || "UNKNOWN",
                         type: "ISSUE",
                         metadata: r.metadata,
+                        anomaly: r.anomaly, // <-- include anomaly
                     })),
                     ...buys.data.data.map((r) => ({
                         id: r.id,
@@ -43,6 +43,7 @@ const AuditDashboard = () => {
                         type: "BUY",
                         creditId: r.creditId,
                         metadata: r.metadata,
+                        anomaly: r.anomaly, // <-- include anomaly
                     })),
                     ...retires.data.data.map((r) => ({
                         id: r.id,
@@ -52,10 +53,11 @@ const AuditDashboard = () => {
                         type: "RETIRE",
                         creditId: r.creditId,
                         metadata: r.metadata,
+                        anomaly: r.anomaly, // <-- include anomaly
                     })),
                 ];
 
-                console.log("Fetched requests:", combined);
+                console.table(combined.map((r) => ({ type: r.type, status: r.status })));
                 setRequests(combined);
             } catch (err) {
                 console.error("Failed to fetch requests:", err);
@@ -68,23 +70,19 @@ const AuditDashboard = () => {
         fetchData();
     }, []);
 
-    // handle Accept/Reject actions
+    // Handle Accept/Reject actions
     const handleAuditAction = async (row, action) => {
         try {
             let endpoint = "";
 
-            if (row.type === "ISSUE") {
-                endpoint = `/request/issues/${row.id}/${action}`;
-            } else if (row.type === "BUY") {
-                endpoint = `/request/buy/${row.id}/${action}`;
-            } else if (row.type === "RETIRE") {
-                endpoint = `/request/retire/${row.id}/${action}`;
-            }
+            if (row.type === "ISSUE") endpoint = `/request/issues/${row.id}/${action}`;
+            else if (row.type === "BUY") endpoint = `/request/buy/${row.id}/${action}`;
+            else if (row.type === "RETIRE") endpoint = `/request/retire/${row.id}/${action}`;
 
             await client.post(endpoint, {});
             alert(`${action === "accept" ? "Accepted" : "Rejected"} request`);
 
-            // refresh list locally
+            // Update requests locally
             setRequests((prev) =>
                 prev.map((r) =>
                     r.id === row.id
@@ -98,10 +96,12 @@ const AuditDashboard = () => {
         }
     };
 
-    // helper to count pending requests
+    // Count pending requests (robust)
     const countPending = (type) =>
         requests.filter(
-            (r) => r.type === type && r.status.toUpperCase() === "PENDING"
+            (r) =>
+                r.type?.toUpperCase() === type.toUpperCase() &&
+                r.status?.toUpperCase() === "PENDING"
         ).length;
 
     return (
@@ -121,22 +121,16 @@ const AuditDashboard = () => {
                 Welcome, {username} 🌱
             </h1>
 
+            {/* Display Cards */}
             <div className="flex justify-center gap-4 mt-4">
-                <DisplayCard
-                    variant="numerical"
-                    title="Total Pending Generate Requests"
-                    number={countPending("ISSUE")}
-                />
-                <DisplayCard
-                    variant="numerical"
-                    title="Total Pending Retire Requests"
-                    number={countPending("RETIRE")}
-                />
-                <DisplayCard
-                    variant="numerical"
-                    title="Total Pending Transfer Requests"
-                    number={countPending("BUY")}
-                />
+                {["ISSUE", "BUY", "RETIRE"].map((t) => (
+                    <DisplayCard
+                        key={t}
+                        variant="numerical"
+                        title={`Total Pending ${t === "BUY" ? "Transfer" : t} Requests`}
+                        number={countPending(t)}
+                    />
+                ))}
             </div>
 
             <h1 className="pl-[2.5%] mt-5 text-3xl font-bold w-[90%]">
@@ -152,9 +146,7 @@ const AuditDashboard = () => {
             </div>
 
             <div className="flex flex-col min-h-[35dvh]">
-                <main className="flex-grow">
-                    {/* Your page content here */}
-                </main>
+                <main className="flex-grow">{/* Page content */}</main>
 
                 <footer className="bg-gray-50 border-t border-t-gray-200 w-full p-5 text-gray-500 text-center">
                     © {new Date().getFullYear()} HydroChain
