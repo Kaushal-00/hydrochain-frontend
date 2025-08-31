@@ -92,8 +92,11 @@ const IndustryDashboard = () => {
                 creditId,
                 metadata: JSON.stringify(retireData[retireIndex])
             });
+            alert("Credit retire successfully!");
+            location.reload();
         } catch (err) {
             console.error("Request failed:", err.response?.data || err.message);
+            alert("Erro while retiring credit!", err);
         }
     }
 
@@ -103,10 +106,12 @@ const IndustryDashboard = () => {
                 creditId,
                 metadata: JSON.stringify(transferData[transferIndex])
             });
-
+            alert("Credit trasfer successfully!");
+            location.reload();
             console.log("Buy request success:", res.data);
         } catch (err) {
             console.error("Buy request failed:", err.response?.data || err.message);
+            alert("Error while transfering credits!", err);
         }
     }
 
@@ -196,13 +201,6 @@ const IndustryDashboard = () => {
             <div className="flex justify-center">
                 <DataTable data={creditHistroy(userData?.transactions ?? [])} />
             </div>
-
-            <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Recent Transactions</h1>
-
-            <div className="flex justify-center">
-                <DataTable data={recentTransactions(userData?.transactions ?? [])} />
-            </div>
-
 
             <div className="bg-gray-50 border-t-gray-200 border-1 mt-8 w-full p-5 text-gray-500">
                 © {new Date().getFullYear()} HydroChain

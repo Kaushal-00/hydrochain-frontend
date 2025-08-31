@@ -31,7 +31,7 @@ const AuditDashboard = () => {
                         id: r.id,
                         amount: r.amount,
                         issuedAt: r.createdAt,
-                        status: r.status,
+                        status: r.status?.toUpperCase() || "UNKNOWN",
                         type: "ISSUE",
                         metadata: r.metadata,
                     })),
@@ -39,7 +39,7 @@ const AuditDashboard = () => {
                         id: r.id,
                         amount: r.amount ?? 0,
                         issuedAt: r.createdAt ?? null,
-                        status: r.status,
+                        status: r.status?.toUpperCase() || "UNKNOWN",
                         type: "BUY",
                         creditId: r.creditId,
                         metadata: r.metadata,
@@ -48,13 +48,14 @@ const AuditDashboard = () => {
                         id: r.id,
                         amount: 0,
                         issuedAt: null,
-                        status: r.status,
+                        status: r.status?.toUpperCase() || "UNKNOWN",
                         type: "RETIRE",
                         creditId: r.creditId,
                         metadata: r.metadata,
                     })),
                 ];
 
+                console.log("Fetched requests:", combined);
                 setRequests(combined);
             } catch (err) {
                 console.error("Failed to fetch requests:", err);
@@ -86,7 +87,9 @@ const AuditDashboard = () => {
             // refresh list locally
             setRequests((prev) =>
                 prev.map((r) =>
-                    r.id === row.id ? { ...r, status: action === "accept" ? "APPROVED" : "REJECTED" } : r
+                    r.id === row.id
+                        ? { ...r, status: action === "accept" ? "APPROVED" : "REJECTED" }
+                        : r
                 )
             );
         } catch (err) {
@@ -94,6 +97,12 @@ const AuditDashboard = () => {
             alert("Action failed");
         }
     };
+
+    // helper to count pending requests
+    const countPending = (type) =>
+        requests.filter(
+            (r) => r.type === type && r.status.toUpperCase() === "PENDING"
+        ).length;
 
     return (
         <div className="bg-gray-100 min-h-screen">
@@ -116,17 +125,17 @@ const AuditDashboard = () => {
                 <DisplayCard
                     variant="numerical"
                     title="Total Pending Generate Requests"
-                    number={requests.filter((r) => r.type === "ISSUE" && r.status === "PENDING").length}
+                    number={countPending("ISSUE")}
                 />
                 <DisplayCard
                     variant="numerical"
                     title="Total Pending Retire Requests"
-                    number={requests.filter((r) => r.type === "RETIRE" && r.status === "PENDING").length}
+                    number={countPending("RETIRE")}
                 />
                 <DisplayCard
                     variant="numerical"
                     title="Total Pending Transfer Requests"
-                    number={requests.filter((r) => r.type === "BUY" && r.status === "PENDING").length}
+                    number={countPending("BUY")}
                 />
             </div>
 
@@ -143,12 +152,10 @@ const AuditDashboard = () => {
             </div>
 
             <div className="flex flex-col min-h-[35dvh]">
-                {/* Main content */}
                 <main className="flex-grow">
                     {/* Your page content here */}
                 </main>
 
-                {/* Footer */}
                 <footer className="bg-gray-50 border-t border-t-gray-200 w-full p-5 text-gray-500 text-center">
                     © {new Date().getFullYear()} HydroChain
                 </footer>
