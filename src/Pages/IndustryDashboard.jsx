@@ -12,6 +12,9 @@ const IndustryDashboard = () => {
     const [userData, setUserData] = useState();
     const [retireIndex, setRetireIndex] = useState();
     const [transferIndex, setTransferIndex] = useState();
+    const [transferCredits, setTransferCredits] = useState([]);
+    const [transferUsername, setTransferUsername] = useState("");
+    const [credites, setCredits] = useState();
     const navigate = useNavigate();
 
     const retireData = [
@@ -70,6 +73,7 @@ const IndustryDashboard = () => {
 
                 const temp = await client.get(`/users/${fetchUsername}`);
                 setUserData(temp.data.data);
+                setCredits(userData?.credits);
 
                 const index = await axios.get(NPOINT_URL);
                 setRetireIndex(index?.data?.industryRetire);
@@ -81,27 +85,29 @@ const IndustryDashboard = () => {
         fetchUser();
     }, [])
 
-    async function retireCredit() {
+    async function retireCredit(creditId) {
         try {
-            await client.post('/request/issues', {
-                amount: 1, // or compute based on hydrogenProduced / credits
-                metadata: JSON.stringify(retireData[retireIndex]) // stringify object
+            console.log(creditId);
+            await client.post('/request/retire', {
+                creditId,
+                metadata: JSON.stringify(retireData[retireIndex])
             });
         } catch (err) {
             console.error("Request failed:", err.response?.data || err.message);
         }
     }
 
-    async function transferCredit() {
+    async function transferCredit(creditId) {
         try {
-            await client.post('/request/issues', {
-                amount: 1, // or compute based on hydrogenProduced / credits
-                metadata: JSON.stringify(transferData[transferIndex]) // stringify object
+            const res = await client.post('/request/buy', {
+                creditId,
+                metadata: JSON.stringify(transferData[transferIndex])
             });
-        } catch (err) {
-            console.error("Request failed:", err.response?.data || err.message);
-        }
 
+            console.log("Buy request success:", res.data);
+        } catch (err) {
+            console.error("Buy request failed:", err.response?.data || err.message);
+        }
     }
 
     function creditHistroy(e) {
@@ -109,7 +115,7 @@ const IndustryDashboard = () => {
     }
 
     function recentTransactions(e) {
-        return e.filter(item => item.type != "ISSUE");
+        return e
     }
 
     return (
@@ -125,8 +131,8 @@ const IndustryDashboard = () => {
             <h1 className="pl-[2.5%] mt-5 text-4xl font-bold w-[90%]">Welcome, {username} 🌱</h1>
 
             <div className="flex justify-center">
-                <DisplayCard variant="numerical" title="Total Credit Retired" number={2450} msg="+12% from last month" />
-                <DisplayCard variant="numerical" title="Total Credit Transfered" number={1890} msg="77% utilization rate" />
+                <DisplayCard variant="numerical" title="Total Credit Retired" number={userData?.creditSummary?.lifeTimeRetiredCredits ?? '-'} msg="+12% from last month" />
+                <DisplayCard variant="numerical" title="Total Credit Bought" number={userData?.creditSummary?.lifeTimeBoughtCredits ?? '-'} msg="77% utilization rate" />
                 <DisplayCard variant="nameDisplay" title="Assigned Auditor" displayName="Environmental Audit Corp" subMsg="Verified & Active" />
             </div>
 
@@ -134,19 +140,52 @@ const IndustryDashboard = () => {
 
             <div className="flex justify-center">
                 <IoTDataFeedCard
-                    requirements="date, hydrogenConsumed, timePeriod, energySource, location, deviceId"
-                    values={retireData[retireIndex]}
-                    onAction={() => retireCredit()}
+                    requirements="date, hydrogenConsumed, timePeriod, energySource, location, deviceId, credits"
+                    values={{
+                        ...retireData[retireIndex],
+                        credits: userData?.credits?.map(c => ({
+                            label: `${c.id} (${c.amount})`,
+                            value: c.id
+                        }))
+                    }}
+                    dropdown={{ credits: true }}
+                    onAction={(formValues) => retireCredit(formValues.credits)} // pass selected creditId
                     actionLabel="Retire Credits"
                 />
-                <CreditBalanceCard current={userData?.creditSummary?.activeAmount ?? '-'} pending={userData?.creditSummary?.pendingAmount ?? '-'} />
+                <CreditBalanceCard current={userData?.creditSummary?.activeAmount ?? '-'} pending={userData?.creditSummary?.pendingAmount ?? '-'} lifetime={userData?.creditSummary?.lifeTimeRetiredCredits ?? '-'} />
             </div>
 
             <div className="ml-[1.25%] w-full">
                 <IoTDataFeedCard
-                    requirements="date, hydrogenTransferred, transferStartTime, transferEndTime, transportMethod, trackingId, location (from), location (to), deviceId"
-                    values={transferData[transferIndex]}
-                    onAction={() => transferCredit()}
+                    requirements="date, hydrogenTransferred, transferStartTime, transferEndTime, transportMethod, trackingId, location (from), location (to), deviceId, username, creditId"
+                    values={{
+                        ...transferData[transferIndex],
+                        username: transferUsername || "",
+                        creditId: transferCredits?.map(c => ({
+                            label: `${c.id} (${c.amount})`,
+                            value: c.id
+                        })) ?? []
+                    }}
+                    dropdown={{ creditId: true }}
+                    onFieldChange={(field, value) => {
+                        if (field === "username") {
+                            setTransferUsername(value);
+                        }
+                    }}
+                    onFieldEnter={async (field, value) => {
+                        if (field === "username") {
+                            try {
+                                const res = await client.get(`/users/${value}`);
+                                const credits = res?.data?.data?.credits || [];
+                                setTransferCredits(credits);
+                            } catch (err) {
+                                console.error("Failed to fetch user credits:", err);
+                            }
+                        }
+                    }}
+                    onAction={(formValues) => {
+                        transferCredit(formValues.creditId);
+                    }}
                     actionLabel="Transfer Credits"
                 />
 

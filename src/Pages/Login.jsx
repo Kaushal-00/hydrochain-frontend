@@ -12,6 +12,7 @@ const Login = () => {
     async function login() {
         try {
             await client.post(`/users/${username}/login`, {
+                did,
                 password
             })
             console.log("Login successful!");

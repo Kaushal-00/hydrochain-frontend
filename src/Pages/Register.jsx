@@ -107,7 +107,7 @@ const Register = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium mb-1">Enter Decentralized Identity (DID)</label>
+                            <label className="block text-sm font-medium mb-1">Decentralized Identity (DID)</label>
                             <input
                                 type="text"
                                 onInput={e => setDid(e.target.value)}

@@ -10,15 +10,15 @@ import { Button } from "./ui/button";
 
 const statusStyles = {
     PENDING: "bg-gray-700 text-white px-3 py-1 rounded-full text-sm flex items-center gap-1",
-    TRANSFERRED_ISSUED: "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
+    APPROVED: "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
     TRANSFERRED: "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
     REJECTED: "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm flex items-center gap-1",
 };
 
 const statusLabels = {
     PENDING: "Pending",
-    TRANSFERRED_ISSUED: "Approved",
-    TRANSFERRED: "Approved",
+    APPROVED: "Approved",
+    TRANSFERRED: "Transferred",
     REJECTED: "Rejected",
 };
 
@@ -44,7 +44,6 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
 
     return (
         <Card className="m-5 w-[90%] p-6 overflow-x-auto">
-            {/* Table Header */}
             <table className="w-full table-fixed border-collapse">
                 <thead>
                     <tr className="text-left border-b">
@@ -69,7 +68,6 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
                 </thead>
             </table>
 
-            {/* Table Body */}
             <div className="max-h-64 overflow-y-auto">
                 <table className="w-full table-fixed border-collapse">
                     <tbody>
@@ -85,19 +83,13 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
                                         }}
                                     >
                                         {col === "status" ? (
-                                            <span
-                                                className={`max-w-22 flex justify-center ${statusStyles[row[col]]}`}
-                                            >
-                                                {statusLabels[row[col]]}
+                                            <span className={`max-w-22 flex justify-center ${statusStyles[row[col]]}`}>
+                                                {statusLabels[row[col]] || row[col]}
                                             </span>
                                         ) : col === "metadata" ? (
                                             <Dialog>
                                                 <DialogTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="text-xs"
-                                                    >
+                                                    <Button variant="outline" size="sm" className="text-xs">
                                                         View
                                                     </Button>
                                                 </DialogTrigger>
@@ -126,7 +118,6 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
                                                     </div>
                                                 </DialogContent>
                                             </Dialog>
-
                                         ) : (
                                             <span
                                                 className={col === "amount" ? "font-semibold" : "block truncate"}
@@ -137,13 +128,8 @@ const DataTable = ({ data, audit = false, onAuditAction }) => {
                                         )}
                                     </td>
                                 ))}
-
-                                {/* ✅ Actions column inside row */}
                                 {audit && (
-                                    <td
-                                        className="py-3 text-sm align-middle text-center"
-                                        style={{ width: columnWidths.audit }}
-                                    >
+                                    <td className="py-3 text-sm align-middle text-center" style={{ width: columnWidths.audit }}>
                                         <div className="inline-flex gap-2">
                                             <Button
                                                 size="sm"
